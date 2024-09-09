@@ -27,6 +27,17 @@ kotlin {
 //            implementation(libs.firebase.auth)
 
             implementation(libs.firebase.auth)
+            val lottieVersion = "6.0.0"
+            implementation("com.airbnb.android:lottie:$lottieVersion")
+            implementation ("com.github.aabhasr1:OtpView:v1.1.2-ktx")
+
+            implementation(project(":composeApp:uicomponents"))
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.appcompat)
+            implementation(libs.androidx.material)
+            implementation(libs.androidx.constraintlayout)
+            implementation(libs.androidx.activity)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
