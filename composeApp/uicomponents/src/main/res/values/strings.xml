@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ig_button">IG BUTTON</string>
+    <string name="ig_text_view">IG TEXT VIEW</string>
+</resources>

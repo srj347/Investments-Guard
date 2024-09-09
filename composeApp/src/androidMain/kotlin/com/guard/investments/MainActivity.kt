@@ -32,6 +32,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set the content view to the XML layout
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.verify_phone_number)
     }
 }

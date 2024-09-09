@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="AnimatedButton">
+        <attr name="text" format="string" />
+        <attr name="loading" format="boolean" />
+        <attr name="enabled" format="boolean" />
+        <attr name="animation_resId" format="reference" />
+        <attr name="loadingDuration" format="integer" />
+    </declare-styleable>
+</resources>
