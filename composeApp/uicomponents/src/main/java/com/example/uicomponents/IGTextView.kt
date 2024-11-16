@@ -14,7 +14,6 @@ class IGTextView @JvmOverloads constructor(
     init {
         if (!isInEditMode) {
             try {
-                // Apply custom font
                 ResourcesCompat.getFont(context, R.font.inter)?.let { typeface = it }
             } catch (e: Exception) {
                 Log.e("IGEdittextView", "Error setting custom font: ${e.message}")

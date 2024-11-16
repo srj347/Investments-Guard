@@ -17,7 +17,7 @@ class IGButtonView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private val textView: TextView
+    public val textView: TextView
     private val animationView: LottieAnimationView
     private var loadingDuration: Long = 0L // Duration in milliseconds
     private val handler = Handler(Looper.getMainLooper()) // Handler to manage delay
@@ -27,7 +27,6 @@ class IGButtonView @JvmOverloads constructor(
         textView = root.findViewById(R.id.ig_textview)
         animationView = root.findViewById(R.id.ig_button_animationView)
         loadAttributes(attrs, defStyleAttr)
-        setupClickListener()
     }
 
     private fun loadAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
@@ -50,21 +49,6 @@ class IGButtonView @JvmOverloads constructor(
         setLottieAnimation(animationResId)
     }
 
-    private fun setupClickListener() {
-        textView.setOnClickListener {
-            setLoading(true)
-            textView.isVisible = false
-            animationView.isVisible = true
-
-            // Automatically stop loading after the specified duration
-            if (loadingDuration > 0) {
-                handler.postDelayed({
-                    setLoading(false)
-                }, loadingDuration)
-            }
-        }
-    }
-
     private fun setLottieAnimation(resId: Int) {
         try {
             animationView.setAnimation(resId)
@@ -74,17 +58,26 @@ class IGButtonView @JvmOverloads constructor(
     }
 
     fun setLoading(isLoading: Boolean) {
+        // Disable or enable the text view clickability based on the loading state
         textView.isClickable = !isLoading
+
+        // Control visibility of textView and animationView based on loading state
         textView.isVisible = !isLoading
         animationView.isVisible = isLoading
+
+        // Play animation when loading is true, and pause when loading is false
         if (isLoading) {
             animationView.playAnimation()
         } else {
-            animationView.pauseAnimation()
+            animationView.pauseAnimation() // Pauses the animation
+            // Optionally, you can call cancelAnimation to completely stop any ongoing animation
+            animationView.cancelAnimation()
+
+            // Make sure the text view is visible again
             textView.isVisible = true
-            animationView.isVisible = false
         }
     }
+
 
     fun setText(text: String) {
         textView.text = text
@@ -122,5 +115,11 @@ class IGButtonView @JvmOverloads constructor(
         } else {
             super.onRestoreInstanceState(state)
         }
+    }
+
+
+    // Set the click listener on textView
+    fun setButtonClickListener(listener: OnClickListener) {
+        textView.setOnClickListener(listener)
     }
 }

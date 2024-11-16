@@ -29,7 +29,7 @@ kotlin {
         commonMain.dependencies {
 //            implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
 //            implementation("com.google.firebase:firebase-auth:23.0.0")
-            implementation("com.google.firebase:firebase-auth:23.0.0")
+//            implementation("com.google.firebase:firebase-auth:23.0.0")
         }
         androidMain.dependencies {
 //            implementation("com.google.firebase:firebase-auth")
