@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.authentication.PhoneOtpAuthService
 import com.example.uicomponents.IGButtonView
 import com.example.uicomponents.IGEdittextView
 import com.example.uicomponents.IGImageView
@@ -15,6 +17,7 @@ import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.CredentialsOptions
 import com.google.android.gms.auth.api.credentials.HintRequest
+import com.google.firebase.auth.FirebaseAuth
 import com.guard.investments.R
 import com.guard.investments.screens.auth.VerifyOtpFragment
 
@@ -25,6 +28,7 @@ class RequestOtpFragment : Fragment() {
     private lateinit var iv_back: IGImageView
 
     private val CREDENTIAL_PICKER_REQUEST = 1001
+    private var phoneOtpAuth: PhoneOtpAuthService? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,6 +44,7 @@ class RequestOtpFragment : Fragment() {
         iv_back = view.findViewById(R.id.iv_back)
         tv_phoneNumber = view.findViewById(R.id.tv_phoneNumber)
         btn_sendCode = view.findViewById(R.id.btn_sendCode)
+        phoneOtpAuth = PhoneOtpAuthService(requireActivity(), FirebaseAuth.getInstance())
 
         btn_sendCode.setButtonClickListener {
             onSendCodeClicked()
@@ -91,6 +96,13 @@ class RequestOtpFragment : Fragment() {
 
     private fun onSendCodeClicked() {
         // Disable the button to prevent double clicks
+        phoneOtpAuth?.sendOtp("+91"+tv_phoneNumber.getCustomText(), {
+            Toast.makeText(requireContext(), "OTP SENT", Toast.LENGTH_SHORT).show()
+            navigateToVerifyOtp()
+        }, {
+
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        })
         btn_sendCode.isEnabled = false
 
         // Show the loading animation
@@ -105,7 +117,7 @@ class RequestOtpFragment : Fragment() {
             btn_sendCode.isEnabled = true
 
             // Navigate to the next fragment
-            navigateToVerifyOtp()
+
         }, 1000) // Adjust delay to match the animation duration (e.g., 1000ms = 1 second)
     }
 

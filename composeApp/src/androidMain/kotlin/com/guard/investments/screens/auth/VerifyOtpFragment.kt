@@ -7,12 +7,12 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.authentication.PhoneOtpAuthService
 import com.example.uicomponents.IGButtonView
 import com.example.uicomponents.IGImageView
 import com.example.uicomponents.IGTextView
@@ -29,6 +29,7 @@ class VerifyOtpFragment : Fragment() {
     private lateinit var ov_otp_code: OtpTextView
     private lateinit var btn_verifyCode: IGButtonView
     private lateinit var tv_resendOtp: IGTextView
+    private var phoneOtpAuthService : PhoneOtpAuthService? = null
 
     private lateinit var smsReceiver: BroadcastReceiver
 
@@ -53,11 +54,20 @@ class VerifyOtpFragment : Fragment() {
         }
 
         btn_verifyCode.setButtonClickListener {
-            onVerifyCodeClicked()
+            startSmsRetriever()
         }
     }
 
-    private fun onVerifyCodeClicked() {
+    private fun onVerifyCodeClicked(otp: String?) {
+
+        if (otp != null) {
+            phoneOtpAuthService?.verifyOtp(otp,{
+                Toast.makeText(requireContext(), "OTP Verified", Toast.LENGTH_SHORT).show()
+            },{
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            })
+        }
+
         // Disable the button to prevent double clicks
         btn_verifyCode.isEnabled = false
 
@@ -115,7 +125,7 @@ class VerifyOtpFragment : Fragment() {
                                 if (matcher.find()) {
                                     val otp = matcher.group(0)
                                     ov_otp_code.setOTP(otp) // Auto-fill OTP
-                                    onVerifyCodeClicked()   // Auto-trigger verification
+                                    onVerifyCodeClicked(otp)   // Auto-trigger verification
                                 }
                             }
                             CommonStatusCodes.TIMEOUT -> {
