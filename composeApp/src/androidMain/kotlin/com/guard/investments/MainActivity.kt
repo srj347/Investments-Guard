@@ -1,10 +1,10 @@
 package com.guard.investments
 
+import RequestOtpFragment
 import android.os.Bundle
 import android.text.TextUtils.replace
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
-import com.guard.investments.screens.auth.RequestOtpFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

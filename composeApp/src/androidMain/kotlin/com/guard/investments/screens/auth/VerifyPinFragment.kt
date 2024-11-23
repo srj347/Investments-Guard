@@ -1,5 +1,6 @@
 package com.guard.investments.screens.auth
 
+import RequestOtpFragment
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -74,9 +75,8 @@ class VerifyPinFragment : Fragment() {
     private fun navigateToNextScreen() {
         // Replace with the desired next screen navigation logic
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container,
-                RequestOtpFragment()
-            ) // Replace with your actual next fragment
+            R.id.fragment_container, RequestOtpFragment()
+        ) // Replace with your actual next fragment
             .addToBackStack(null) // Adds this transaction to the back stack
             .commit()
     }

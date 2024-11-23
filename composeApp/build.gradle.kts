@@ -30,7 +30,7 @@ kotlin {
             val lottieVersion = "6.0.0"
             implementation("com.airbnb.android:lottie:$lottieVersion")
             implementation ("com.github.aabhasr1:OtpView:v1.1.2-ktx")
-
+            implementation ("com.google.android.gms:play-services-auth:20.7.0")
             implementation(project(":composeApp:uicomponents"))
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.appcompat)
