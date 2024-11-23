@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.authentication.PhoneOtpAuthService
 import com.example.uicomponents.IGButtonView
 import com.example.uicomponents.IGEdittextView
@@ -20,6 +21,7 @@ import com.google.android.gms.auth.api.credentials.HintRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.guard.investments.R
 import com.guard.investments.screens.auth.VerifyOtpFragment
+import com.guard.investments.viewmodels.AuthViewModel
 
 class RequestOtpFragment : Fragment() {
 
@@ -28,7 +30,7 @@ class RequestOtpFragment : Fragment() {
     private lateinit var iv_back: IGImageView
 
     private val CREDENTIAL_PICKER_REQUEST = 1001
-    private var phoneOtpAuth: PhoneOtpAuthService? = null
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -44,7 +46,6 @@ class RequestOtpFragment : Fragment() {
         iv_back = view.findViewById(R.id.iv_back)
         tv_phoneNumber = view.findViewById(R.id.tv_phoneNumber)
         btn_sendCode = view.findViewById(R.id.btn_sendCode)
-        phoneOtpAuth = PhoneOtpAuthService(requireActivity(), FirebaseAuth.getInstance())
 
         btn_sendCode.setButtonClickListener {
             onSendCodeClicked()
@@ -96,7 +97,7 @@ class RequestOtpFragment : Fragment() {
 
     private fun onSendCodeClicked() {
         // Disable the button to prevent double clicks
-        phoneOtpAuth?.sendOtp("+91"+tv_phoneNumber.getCustomText(), {
+        authViewModel.phoneOtpAuthServices?.sendOtp("+91"+tv_phoneNumber.getCustomText(), {
             Toast.makeText(requireContext(), "OTP SENT", Toast.LENGTH_SHORT).show()
             navigateToVerifyOtp()
         }, {

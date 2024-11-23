@@ -1,5 +1,8 @@
 package com.guard.investments.screens.auth
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -7,11 +10,15 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.registerReceiver
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.authentication.PhoneOtpAuthService
 import com.example.uicomponents.IGButtonView
 import com.example.uicomponents.IGImageView
@@ -20,129 +27,156 @@ import com.guard.investments.R
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
+import com.google.firebase.auth.FirebaseAuth
+import com.guard.investments.viewmodels.AuthViewModel
 import `in`.aabhasjindal.otptextview.OtpTextView
 import java.util.regex.Pattern
 
 class VerifyOtpFragment : Fragment() {
 
-    private lateinit var iv_back: IGImageView
-    private lateinit var ov_otp_code: OtpTextView
-    private lateinit var btn_verifyCode: IGButtonView
-    private lateinit var tv_resendOtp: IGTextView
-    private var phoneOtpAuthService : PhoneOtpAuthService? = null
+    private lateinit var ivBack: IGImageView
+    private lateinit var ovOtpCode: OtpTextView
+    private lateinit var btnVerifyCode: IGButtonView
+    private lateinit var tvResendOtp: IGTextView
+    private val authViewModel: AuthViewModel by activityViewModels()
 
-    private lateinit var smsReceiver: BroadcastReceiver
+    private val SMS_CONSENT_REQUEST = 2
+
+    override fun onResume() {
+        super.onResume()
+
+        registerReceiver(
+            requireActivity(),
+            smsVerificationReceiver,
+            IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION),
+            SmsRetriever.SEND_PERMISSION,
+            null,
+            ContextCompat.RECEIVER_EXPORTED
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireContext().unregisterReceiver(smsVerificationReceiver)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.verify_otp, container, false)
         initViews(view)
-        startSmsRetriever()
         return view
     }
 
     private fun initViews(view: View) {
-        iv_back = view.findViewById(R.id.iv_back_btn)
-        ov_otp_code = view.findViewById(R.id.ov_verify_otp)
-        btn_verifyCode = view.findViewById(R.id.btn_verify_otp)
-        tv_resendOtp = view.findViewById(R.id.tv_resend_otp)
+        ivBack = view.findViewById(R.id.iv_back_btn)
+        ovOtpCode = view.findViewById(R.id.ov_verify_otp)
+        btnVerifyCode = view.findViewById(R.id.btn_verify_otp)
+        tvResendOtp = view.findViewById(R.id.tv_resend_otp)
 
-        iv_back.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed() // Navigate back
+        startSmartUserConsent()
+
+        ivBack.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
-        btn_verifyCode.setButtonClickListener {
-            startSmsRetriever()
+        btnVerifyCode.setButtonClickListener {
+            val otp = ovOtpCode.otp
+            if (!otp.isNullOrEmpty()) {
+                verifyCode(otp)
+            } else {
+                Toast.makeText(requireContext(), "Please enter OTP", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        tvResendOtp.setOnClickListener {
+            Toast.makeText(requireContext(), "Resending OTP...", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun onVerifyCodeClicked(otp: String?) {
-
-        if (otp != null) {
-            phoneOtpAuthService?.verifyOtp(otp,{
-                Toast.makeText(requireContext(), "OTP Verified", Toast.LENGTH_SHORT).show()
-            },{
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            })
-        }
-
-        // Disable the button to prevent double clicks
-        btn_verifyCode.isEnabled = false
-
-        // Show the loading animation
-        btn_verifyCode.setLoading(true)
-
-        // Simulate verification
-        Handler(Looper.getMainLooper()).postDelayed({
-            // Stop the loading animation
-            btn_verifyCode.setLoading(false)
-
-            // Re-enable the button for future interactions
-            btn_verifyCode.isEnabled = true
-
-            // Navigate to the next fragment (or activity)
-            navigateToCreatePin()
-        }, 1000)
+    private fun startSmartUserConsent() {
+        SmsRetriever.getClient(requireActivity())
+            .startSmsUserConsent(null)
+            .addOnSuccessListener {
+                Log.d(PhoneOtpAuthService.TAG, "startSmartUserConsent: SUCCESS")
+            }
+            .addOnFailureListener {
+                Log.d(PhoneOtpAuthService.TAG, "startSmartUserConsent: FAILURE")
+            }
     }
 
-    private fun navigateToCreatePin() {
-        requireActivity().supportFragmentManager.beginTransaction().replace(
-            R.id.fragment_container,
-            CreatePinFragment()
-        )
-            .addToBackStack(null)
-            .commit()
-    }
+    private val smsVerificationReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
+                val extras = intent.extras
+                val smsRetrieverStatus = extras?.get(SmsRetriever.EXTRA_STATUS) as Status
 
-    private fun startSmsRetriever() {
-        val client = SmsRetriever.getClient(requireContext())
-        val task = client.startSmsRetriever()
-
-        task.addOnSuccessListener {
-            // SMS Retriever API started successfully
-            Toast.makeText(context, "Waiting for OTP...", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener {
-            // Failed to start SMS Retriever
-            Toast.makeText(context, "Failed to start SMS Retriever", Toast.LENGTH_SHORT).show()
-        }
-
-        smsReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (SmsRetriever.SMS_RETRIEVED_ACTION == intent.action) {
-                    val extras = intent.extras
-                    if (extras != null) {
-                        val status = extras[SmsRetriever.EXTRA_STATUS] as Status
-                        when (status.statusCode) {
-                            CommonStatusCodes.SUCCESS -> {
-                                // SMS retrieved successfully
-                                val message = extras[SmsRetriever.EXTRA_SMS_MESSAGE] as String
-
-                                // Extract OTP using regex (assuming OTP is a 4-digit code)
-                                val pattern = Pattern.compile("\\d{4}")
-                                val matcher = pattern.matcher(message)
-                                if (matcher.find()) {
-                                    val otp = matcher.group(0)
-                                    ov_otp_code.setOTP(otp) // Auto-fill OTP
-                                    onVerifyCodeClicked(otp)   // Auto-trigger verification
-                                }
-                            }
-                            CommonStatusCodes.TIMEOUT -> {
-                                // SMS retrieval timed out
-                                Toast.makeText(context, "SMS retrieval timed out", Toast.LENGTH_SHORT).show()
-                            }
+                when (smsRetrieverStatus.statusCode) {
+                    CommonStatusCodes.SUCCESS -> {
+                        // Get consent intent
+                        val consentIntent =
+                            extras.getParcelable<Intent>(SmsRetriever.EXTRA_CONSENT_INTENT)
+                        try {
+                            // Start activity to show consent dialog to user, activity must be started in
+                            // 5 minutes, otherwise you'll receive another TIMEOUT intent
+                            startActivityForResult(consentIntent!!, SMS_CONSENT_REQUEST)
+                        } catch (e: ActivityNotFoundException) {
+                            // Handle the exception ...
                         }
+                    }
+
+                    CommonStatusCodes.TIMEOUT -> {
+                        // Time out occurred, handle the error.
                     }
                 }
             }
         }
-        requireContext().registerReceiver(smsReceiver, IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION))
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Unregister the SMS BroadcastReceiver
-        requireContext().unregisterReceiver(smsReceiver)
+
+    private fun verifyCode(otp: String) {
+        btnVerifyCode.isEnabled = false
+        btnVerifyCode.setLoading(true)
+
+        authViewModel.phoneOtpAuthServices?.verifyOtp(otp, {
+            Toast.makeText(requireContext(), "OTP Verified", Toast.LENGTH_SHORT).show()
+            navigateToCreatePin()
+        }, {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            btnVerifyCode.isEnabled = true
+            btnVerifyCode.setLoading(false)
+        })
     }
+
+    private fun navigateToCreatePin() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, CreatePinFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SMS_CONSENT_REQUEST) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                val message = data.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
+                val oneTimeCode = parseOneTimeCode(message)
+                if (oneTimeCode != null) {
+                    verifyCode(oneTimeCode)
+                    ovOtpCode.setOTP(oneTimeCode)
+                }
+            } else {
+                Toast.makeText(requireContext(), "Consent denied. Please enter OTP manually.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    private fun parseOneTimeCode(message: String?): String? {
+        val pattern = Pattern.compile("\\d{6}")
+        val matcher = pattern.matcher(message ?: "")
+        return if (matcher.find()) matcher.group(0) else null
+    }
+
+
 }

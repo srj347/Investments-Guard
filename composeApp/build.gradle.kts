@@ -28,10 +28,12 @@ kotlin {
 //            implementation(libs.firebase.auth)
 
             implementation(libs.firebase.auth)
+            implementation("androidx.fragment:fragment-ktx:1.6.2")
             val lottieVersion = "6.0.0"
             implementation("com.airbnb.android:lottie:$lottieVersion")
             implementation ("com.github.aabhasr1:OtpView:v1.1.2-ktx")
-            implementation ("com.google.android.gms:play-services-auth:20.7.0")
+            implementation("com.google.android.gms:play-services-auth:19.0.0")
+            implementation("com.google.android.gms:play-services-auth-api-phone:17.5.0")
             implementation(project(":composeApp:uicomponents"))
             implementation(project(":composeApp:authentication"))
             implementation(libs.androidx.core.ktx)

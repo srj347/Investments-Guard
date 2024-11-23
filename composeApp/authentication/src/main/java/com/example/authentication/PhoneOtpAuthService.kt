@@ -25,7 +25,7 @@ class PhoneOtpAuthService(
         val callbacks = getVerificationCallbacks(onSuccess, onFailure)
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
+            .setTimeout(0L, TimeUnit.SECONDS)
             .setActivity(activity)
             .setCallbacks(callbacks)
             .build()
