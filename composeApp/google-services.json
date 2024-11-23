@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "157324164860",
+    "project_id": "investments-guard-441922",
+    "storage_bucket": "investments-guard-441922.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157324164860:android:342986515e4a9cf5106179",
+        "android_client_info": {
+          "package_name": "com.guard.investments"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCv0aTkW8EYuLmDGWSy-zPFRMoJY4bzySw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -18,6 +18,7 @@ junit = "4.13.2"
 kotlin = "2.0.0"
 kotlinVersion = "1.9.0"
 activity = "1.9.0"
+gServices = "4.4.2"
 
 [libraries]
 #firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -44,3 +45,4 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "gServices" }

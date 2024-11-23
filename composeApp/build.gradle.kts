@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.googleServices)
 }
 
 kotlin {
@@ -32,12 +33,14 @@ kotlin {
             implementation ("com.github.aabhasr1:OtpView:v1.1.2-ktx")
 
             implementation(project(":composeApp:uicomponents"))
+            implementation(project(":composeApp:authentication"))
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.material)
             implementation(libs.androidx.constraintlayout)
             implementation(libs.androidx.activity)
-
+//            implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+//            implementation("com.google.firebase:firebase-auth")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
