@@ -1,37 +1,21 @@
-//package com.guard.investments
-//
-//import App
-//import android.os.Bundle
-//import androidx.activity.ComponentActivity
-//import androidx.activity.compose.setContent
-//import androidx.compose.runtime.Composable
-//import androidx.compose.ui.tooling.preview.Preview
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        setContent {
-//            App()
-//        }
-//    }
-//}
-//
-//@Preview
-//@Composable
-//fun AppAndroidPreview() {
-//    App()
-//}
-
 package com.guard.investments
 
+import RequestOtpFragment
 import android.os.Bundle
+import android.text.TextUtils.replace
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set the content view to the XML layout
-        setContentView(R.layout.verify_phone_number)
+        setContentView(R.layout.activity_main)
+
+        // Replace the container with the RequestOtpFragment
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RequestOtpFragment()).commit()
+        }
     }
 }

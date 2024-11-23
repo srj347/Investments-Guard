@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Investment Guards</string>
     <string name="create_the_security_pin_to_protect_your_account">Create the Security PIN to protect \n your account</string>
+    <string name="phone_number">Phone Number</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

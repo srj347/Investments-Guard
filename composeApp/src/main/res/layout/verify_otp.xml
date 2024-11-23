@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".MainActivity"
-    >
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -17,8 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/back_button"
+        <com.example.uicomponents.IGImageView
+            android:id="@+id/iv_back_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -63,16 +62,16 @@
                 android:text="Enter the OTP we sent to "
                 android:textSize="13sp" />
 
-            <com.example.uicomponents.IGTextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:fontFamily="@font/inter"
-                android:text="Edit"
-                android:textColor="@color/IG_GREEN_COLOR"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+            <!--            <com.example.uicomponents.IGTextView-->
+            <!--                android:id="@+id/textView2"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_alignParentEnd="true"-->
+            <!--                android:fontFamily="@font/inter"-->
+            <!--                android:text="Edit"-->
+            <!--                android:textColor="@color/IG_GREEN_COLOR"-->
+            <!--                android:textSize="13sp"-->
+            <!--                android:textStyle="bold" />-->
 
         </RelativeLayout>
 
@@ -80,22 +79,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginTop="12dp"
+            android:gravity="center"
             android:orientation="vertical">
 
             <in.aabhasjindal.otptextview.OtpTextView
-                android:id="@+id/otp_view"
+                android:id="@+id/ov_verify_otp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#ffffff"
-                app:height="40dp"
-                app:width="40dp"
+                android:textColor="#388E3C"
                 app:bar_enabled="true"
                 app:bar_height="2dp"
+                app:height="40dp"
                 app:length="4"
-                app:otp="1234"
-                app:otp_text_size="24dp"/>
+                app:otp_text_size="24dp"
+                app:width="40dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,6 +110,7 @@
                     android:textSize="13sp" />
 
                 <com.example.uicomponents.IGTextView
+                    android:id="@+id/tv_resend_otp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -130,16 +129,16 @@
     </LinearLayout>
 
     <com.example.uicomponents.IGButtonView
-        android:id="@+id/custom_button"
+        android:id="@+id/btn_verify_otp"
         android:layout_width="329dp"
         android:layout_height="48dp"
-        app:loadingDuration="3000"
-        app:text="VERIFY OTP"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.903" />
+        app:layout_constraintVertical_bias="0.903"
+        app:loadingDuration="3000"
+        app:text="VERIFY OTP" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

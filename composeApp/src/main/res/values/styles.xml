@@ -1,0 +1,9 @@
+<!-- res/values/styles.xml -->
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/IG_GREEN_COLOR</item>
+        <item name="colorPrimaryDark">@color/IG_GREEN_COLOR</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+</resources>

@@ -3,4 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="IG_GREEN_COLOR">#007B5D</color>
+    <color name="colorPrimary">#6200EE</color>
+
+    <!-- Darker version of primary color -->
+    <color name="colorPrimaryDark">#3700B3</color>
+
+    <!-- Accent color for UI elements -->
+    <color name="colorAccent">#03DAC5</color>
 </resources>
