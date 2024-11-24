@@ -27,12 +27,10 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-//            implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-//            implementation("com.google.firebase:firebase-auth:23.0.0")
-//            implementation("com.google.firebase:firebase-auth:23.0.0")
+            api(libs.datastore.preferences)
+            api(libs.datastore)
         }
         androidMain.dependencies {
-//            implementation("com.google.firebase:firebase-auth")
 
         }
         iosMain.dependencies {  }
