@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.authentication.PhoneOtpAuthService
+import androidx.lifecycle.lifecycleScope
 import com.example.uicomponents.IGButtonView
 import com.example.uicomponents.IGEdittextView
 import com.example.uicomponents.IGImageView
@@ -18,10 +18,12 @@ import com.google.android.gms.auth.api.credentials.Credential
 import com.google.android.gms.auth.api.credentials.Credentials
 import com.google.android.gms.auth.api.credentials.CredentialsOptions
 import com.google.android.gms.auth.api.credentials.HintRequest
-import com.google.firebase.auth.FirebaseAuth
 import com.guard.investments.R
 import com.guard.investments.screens.auth.VerifyOtpFragment
 import com.guard.investments.viewmodels.AuthViewModel
+import datasource.LocalPreference
+import datasource.PreferenceConstants
+import kotlinx.coroutines.launch
 
 class RequestOtpFragment : Fragment() {
 
@@ -39,7 +41,17 @@ class RequestOtpFragment : Fragment() {
         val view = inflater.inflate(R.layout.verify_phone_number, container, false)
         initViews(view)
         requestHint() // Request phone number hint when the fragment is created
+        fetchFromPreference()
         return view
+    }
+
+    private fun fetchFromPreference() {
+        lifecycleScope.launch {
+            val pin = LocalPreference.getFirstPreference(PreferenceConstants.DEVICE_ACCESS_PIN, 0)
+            if(pin != 0){
+                Toast.makeText(requireContext(), "Pin is $pin", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun initViews(view: View) {

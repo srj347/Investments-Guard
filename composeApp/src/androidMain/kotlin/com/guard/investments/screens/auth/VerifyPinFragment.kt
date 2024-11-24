@@ -8,11 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.uicomponents.IGButtonView
 import com.example.uicomponents.IGImageView
 import com.example.uicomponents.IGTextView
 import com.guard.investments.R
+import datasource.LocalPreference
+import datasource.PreferenceConstants
 import `in`.aabhasjindal.otptextview.OtpTextView
+import kotlinx.coroutines.launch
 
 class VerifyPinFragment : Fragment() {
 
@@ -43,7 +47,17 @@ class VerifyPinFragment : Fragment() {
         }
 
         btn_VerifyPin.setButtonClickListener {
+            savePinToPreference()
             onVerifyPinClicked()
+        }
+    }
+
+    /**
+     * Temp code to save pin into shared preference
+     */
+    fun savePinToPreference(){
+        lifecycleScope.launch {
+            LocalPreference.putPreference(PreferenceConstants.DEVICE_ACCESS_PIN, 1234)
         }
     }
 
